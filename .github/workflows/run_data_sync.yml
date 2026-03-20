@@ -100,6 +100,15 @@ jobs:
         run: |
           python run_page/keep_sync.py ${{ secrets.KEEP_MOBILE }} ${{ secrets.KEEP_PASSWORD }} --with-gpx
 
+      - name: Debug COROS secrets
+        if: env.RUN_TYPE == 'coros'
+        run: |
+          echo "COROS_ACCOUNT length: ${#COROS_ACCOUNT}"
+          echo "COROS_PASSWORD length: ${#COROS_PASSWORD}"
+        env:
+          COROS_ACCOUNT: ${{ secrets.COROS_ACCOUNT }}
+          COROS_PASSWORD: ${{ secrets.COROS_PASSWORD }}
+
       - name: Run sync Coros script
         if: env.RUN_TYPE == 'coros'
         run: |
