@@ -11,7 +11,7 @@ interface ISiteMetadataResult {
 
 const data: ISiteMetadataResult = {
   siteTitle: 'Running Page',
-  siteUrl: 'https://zhuyoukang/running/profile.com',
+  siteUrl: '', // https://zhuyoukang/running/profile.com
   logo: 'https://avatars.githubusercontent.com/u/8546109?v=4', // todo
   description: 'Personal site and blog',
   navLinks: [
