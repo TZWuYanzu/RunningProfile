@@ -155,12 +155,19 @@ async def gather_with_concurrency(n, tasks):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("account", nargs="?", help="input coros account")
-
     parser.add_argument("password", nargs="?", help="input coros password")
     options = parser.parse_args()
 
     account = options.account
     password = options.password
+
+    # 检查参数是否为空
+    if not account:
+        raise ValueError("COROS account is empty! Please check your COROS_ACCOUNT secret in GitHub.")
+    if not password:
+        raise ValueError("COROS password is empty! Please check your COROS_PASSWORD secret in GitHub.")
+
+    print(f"Starting COROS sync for account: {account[:3]}***")
     encrypted_pwd = hashlib.md5(password.encode()).hexdigest()
 
     asyncio.run(download_and_generate(account, encrypted_pwd))
