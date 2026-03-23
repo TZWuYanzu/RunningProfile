@@ -1,9 +1,14 @@
 // const
-const MAPBOX_TOKEN =
-  // For security reasons, please avoid using the default public token provided by Mapbox as much as possible.
-  // Instead, manually add a new token and apply URL restrictions.
-  // (please refer to https://github.com/yihong0618/running_page/issues/643#issuecomment-2042668580)
-  'pk.eyJ1IjoieWlob25nMDYxOCIsImEiOiJja2J3M28xbG4wYzl0MzJxZm0ya2Fua2p2In0.PNKfkeQwYuyGOTT_x9BJ4Q';
+// Mapbox Token - 通过环境变量 VITE_MAPBOX_TOKEN 配置
+// 获取方式: https://account.mapbox.com/access-tokens/
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
+
+// 高德地图 Key - 优先使用环境变量
+// 获取方式: https://console.amap.com/dev/key/app
+const AMAP_KEY = import.meta.env.VITE_AMAP_KEY || '';
+
+// 地图服务选择: 'mapbox' | 'amap'
+const MAP_PROVIDER = import.meta.env.VITE_MAP_PROVIDER || 'mapbox';
 const MUNICIPALITY_CITIES_ARR = [
   '北京市',
   '上海市',
@@ -86,7 +91,7 @@ const ACTIVITY_TYPES = {
   CYCLING_TITLE,
   SKIING_TITLE,
   WALKING_TITLE,
-}
+};
 
 const RUN_TITLES = {
   FULL_MARATHON_RUN_TITLE,
@@ -104,6 +109,8 @@ export {
   CHINESE_LOCATION_INFO_MESSAGE_FIRST,
   CHINESE_LOCATION_INFO_MESSAGE_SECOND,
   MAPBOX_TOKEN,
+  AMAP_KEY,
+  MAP_PROVIDER,
   MUNICIPALITY_CITIES_ARR,
   MAP_LAYER_LIST,
   IS_CHINESE,
