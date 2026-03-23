@@ -7,7 +7,7 @@ import time
 import aiofiles
 import httpx
 
-from config import JSON_FILE, SQL_FILE, FIT_FOLDER
+from config import JSON_FILE, SQL_FILE, FIT_FOLDER, config
 from utils import make_activities_file
 
 COROS_URL_DICT = {
@@ -158,14 +158,15 @@ if __name__ == "__main__":
     parser.add_argument("password", nargs="?", help="input coros password")
     options = parser.parse_args()
 
-    account = options.account
-    password = options.password
+    # 优先使用命令行参数，其次使用 config.yaml
+    account = options.account or config("sync", "coros", "account")
+    password = options.password or config("sync", "coros", "password")
 
     # 检查参数是否为空
     if not account:
-        raise ValueError("COROS account is empty! Please check your COROS_ACCOUNT secret in GitHub.")
+        raise ValueError("COROS account is empty! Please set it in config.yaml or pass as argument.")
     if not password:
-        raise ValueError("COROS password is empty! Please check your COROS_PASSWORD secret in GitHub.")
+        raise ValueError("COROS password is empty! Please set it in config.yaml or pass as argument.")
 
     print(f"Starting COROS sync for account: {account[:3]}***")
     encrypted_pwd = hashlib.md5(password.encode()).hexdigest()

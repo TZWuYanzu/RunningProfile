@@ -11,7 +11,12 @@ import os
 from collections import namedtuple
 
 import gpxpy as mod_gpxpy
-import lxml
+try:
+    import lxml
+    HAS_LXML = True
+except ImportError:
+    HAS_LXML = False
+    lxml = None
 import polyline
 import s2sphere as s2
 from garmin_fit_sdk import Decoder, Stream
@@ -196,22 +201,23 @@ class Track:
                 self.track_name = t.name
             for s in t.segments:
                 try:
-                    extensions = [
-                        {
-                            lxml.etree.QName(child).localname: child.text
-                            for child in p.extensions[0]
-                        }
-                        for p in s.points
-                        if p.extensions
-                    ]
-                    heart_rate_list.extend(
-                        [
-                            int(p["hr"]) if p.__contains__("hr") else None
-                            for p in extensions
-                            if extensions
+                    if HAS_LXML:
+                        extensions = [
+                            {
+                                lxml.etree.QName(child).localname: child.text
+                                for child in p.extensions[0]
+                            }
+                            for p in s.points
+                            if p.extensions
                         ]
-                    )
-                    heart_rate_list = list(filter(None, heart_rate_list))
+                        heart_rate_list.extend(
+                            [
+                                int(p["hr"]) if p.__contains__("hr") else None
+                                for p in extensions
+                                if extensions
+                            ]
+                        )
+                        heart_rate_list = list(filter(None, heart_rate_list))
                 except:
                     pass
                 line = [
