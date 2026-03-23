@@ -13,6 +13,10 @@ yarn-error.log
 _posts/
 _site/
 
+# Environment variables (local secrets)
+.env.local
+.env*.local
+
 .mypy_cache
 
 /.vscode
@@ -20,3 +24,11 @@ _site/
 
 config.yaml
 .venv/
+
+# Local activity data (for development, not committed)
+FIT_OUT/
+GPX_OUT/
+TCX_OUT/
+run_page/data.db
+src/static/activities.json
+imported.json
