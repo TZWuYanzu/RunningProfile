@@ -10,10 +10,10 @@ interface ISiteMetadataResult {
 }
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Running Page',
-  siteUrl: '', // https://zhuyoukang/running/profile.com
-  logo: 'https://avatars.githubusercontent.com/u/8546109?v=4', // todo
-  description: 'Personal site and blog',
+  siteTitle: '诺金的跑野记录',
+  siteUrl: 'https://TZWuYanzu.github.io/RunningProfile',
+  logo: 'https://avatars.githubusercontent.com/TZWuYanzu',
+  description: 'Personal running page',
   navLinks: [
     {
       name: 'Blog',
