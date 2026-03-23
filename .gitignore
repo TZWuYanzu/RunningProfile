@@ -13,6 +13,9 @@ yarn-error.log
 _posts/
 _site/
 
+# Qoder IDE
+.qoder/
+
 # Environment variables (local secrets)
 .env.local
 .env*.local
