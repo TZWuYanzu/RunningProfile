@@ -45,6 +45,15 @@ ACTIVITY_KEYS = [
     "summary_polyline",
     "average_heartrate",
     "average_speed",
+    "elevation_gain",
+    "elevation_loss",
+    "max_heartrate",
+    "avg_cadence",
+    "avg_power",
+    "calories",
+    "avg_temperature",
+    "hr_zone_time",
+    "laps",
 ]
 
 
@@ -64,6 +73,15 @@ class Activity(Base):
     summary_polyline = Column(String)
     average_heartrate = Column(Float)
     average_speed = Column(Float)
+    elevation_gain = Column(Float)
+    elevation_loss = Column(Float)
+    max_heartrate = Column(Float)
+    avg_cadence = Column(Float)
+    avg_power = Column(Float)
+    calories = Column(Float)
+    avg_temperature = Column(Float)
+    hr_zone_time = Column(String)
+    laps = Column(String)
     streak = None
 
     def to_dict(self):
@@ -126,6 +144,15 @@ def update_or_create_activity(session, run_activity):
                 summary_polyline=(
                     run_activity.map and run_activity.map.summary_polyline or ""
                 ),
+                elevation_gain=getattr(run_activity, "elevation_gain", None),
+                elevation_loss=getattr(run_activity, "elevation_loss", None),
+                max_heartrate=getattr(run_activity, "max_heartrate", None),
+                avg_cadence=getattr(run_activity, "avg_cadence", None),
+                avg_power=getattr(run_activity, "avg_power", None),
+                calories=getattr(run_activity, "calories", None),
+                avg_temperature=getattr(run_activity, "avg_temperature", None),
+                hr_zone_time=getattr(run_activity, "hr_zone_time", None),
+                laps=getattr(run_activity, "laps", None),
             )
             session.add(activity)
             created = True
@@ -141,6 +168,15 @@ def update_or_create_activity(session, run_activity):
             activity.summary_polyline = (
                 run_activity.map and run_activity.map.summary_polyline or ""
             )
+            activity.elevation_gain = getattr(run_activity, "elevation_gain", None)
+            activity.elevation_loss = getattr(run_activity, "elevation_loss", None)
+            activity.max_heartrate = getattr(run_activity, "max_heartrate", None)
+            activity.avg_cadence = getattr(run_activity, "avg_cadence", None)
+            activity.avg_power = getattr(run_activity, "avg_power", None)
+            activity.calories = getattr(run_activity, "calories", None)
+            activity.avg_temperature = getattr(run_activity, "avg_temperature", None)
+            activity.hr_zone_time = getattr(run_activity, "hr_zone_time", None)
+            activity.laps = getattr(run_activity, "laps", None)
     except Exception as e:
         print(f"something wrong with {run_activity.id}")
         print(str(e))

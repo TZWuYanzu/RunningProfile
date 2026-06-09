@@ -7,6 +7,7 @@
 
 import datetime
 from datetime import timezone
+import json
 import os
 from collections import namedtuple
 
@@ -60,6 +61,15 @@ class Track:
         self.type = "Run"
         self.subtype = None  # for fit file
         self.device = ""
+        self.elevation_gain = None
+        self.elevation_loss = None
+        self.max_heartrate = None
+        self.avg_cadence = None
+        self.avg_power = None
+        self.calories = None
+        self.avg_temperature = None
+        self.hr_zone_time = None
+        self.laps = None
 
     def load_gpx(self, file_name):
         """
@@ -262,6 +272,35 @@ class Track:
             self.type = message["sport"].lower()
         self.subtype = message["sub_sport"] if "sub_sport" in message else None
 
+        # extended session fields
+        self.elevation_gain = message.get("total_ascent")
+        self.elevation_loss = message.get("total_descent")
+        self.max_heartrate = message.get("max_heart_rate")
+        self.avg_cadence = message.get("avg_running_cadence")
+        self.avg_power = message.get("avg_power")
+        self.calories = message.get("total_calories")
+        self.avg_temperature = message.get("avg_temperature")
+        hr_zones_raw = message.get("time_in_hr_zone")
+        if hr_zones_raw and isinstance(hr_zones_raw, (list, tuple)):
+            self.hr_zone_time = json.dumps([round(z, 1) for z in hr_zones_raw])
+
+        # lap data
+        if "lap_mesgs" in fit and fit["lap_mesgs"]:
+            laps_list = []
+            for lap in fit["lap_mesgs"]:
+                lap_data = {
+                    "distance": round(lap.get("total_distance", 0), 1),
+                    "time": round(lap.get("total_timer_time", 0), 1),
+                    "avg_hr": lap.get("avg_heart_rate"),
+                    "max_hr": lap.get("max_heart_rate"),
+                    "avg_speed": lap.get("enhanced_avg_speed") or lap.get("avg_speed"),
+                    "ascent": lap.get("total_ascent"),
+                    "descent": lap.get("total_descent"),
+                    "avg_cadence": lap.get("avg_running_cadence"),
+                }
+                laps_list.append(lap_data)
+            self.laps = json.dumps(laps_list, ensure_ascii=False)
+
         # moving_dict
         self.moving_dict["distance"] = message["total_distance"]
         self.moving_dict["moving_time"] = datetime.timedelta(
@@ -360,6 +399,17 @@ class Track:
             ),
             "map": run_map(self.polyline_str),
             "start_latlng": self.start_latlng,
+            "elevation_gain": self.elevation_gain,
+            "elevation_loss": self.elevation_loss,
+            "max_heartrate": (
+                int(self.max_heartrate) if self.max_heartrate else None
+            ),
+            "avg_cadence": self.avg_cadence,
+            "avg_power": self.avg_power,
+            "calories": self.calories,
+            "avg_temperature": self.avg_temperature,
+            "hr_zone_time": self.hr_zone_time,
+            "laps": self.laps,
         }
         d.update(self.moving_dict)
         # return a nametuple that can use . to get attr
