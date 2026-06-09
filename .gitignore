@@ -33,5 +33,8 @@ FIT_OUT/
 GPX_OUT/
 TCX_OUT/
 run_page/data.db
+run_page/data.db-shm
+run_page/data.db-wal
+__pycache__/
 src/static/activities.json
 imported.json
