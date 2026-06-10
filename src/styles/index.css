@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #f9fafb;
+    --color-accent: #ef4444;
+    --color-text-primary: #000000;
+    --color-text-secondary: #6b7280;
+    --color-text-tertiary: #9ca3af;
+    --color-text-muted: #d1d3d7;
+    --color-border-strong: #000000;
+    --color-border-subtle: #f3f4f6;
+    --color-invert-bg: #000000;
+    --color-invert-text: #ffffff;
+  }
+}
+
 img::selection {
   background: transparent;
 }

@@ -15,7 +15,21 @@ export default {
         'sans-serif',
       ],
     },
-    extend: {},
+    extend: {
+      colors: {
+        app: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        accent: 'var(--color-accent)',
+        primary: 'var(--color-text-primary)',
+        secondary: 'var(--color-text-secondary)',
+        tertiary: 'var(--color-text-tertiary)',
+        muted: 'var(--color-text-muted)',
+        strong: 'var(--color-border-strong)',
+        subtle: 'var(--color-border-subtle)',
+        invert: 'var(--color-invert-bg)',
+        'invert-text': 'var(--color-invert-text)',
+      },
+    },
   },
   plugins: [],
 };
