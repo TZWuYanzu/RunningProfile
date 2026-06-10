@@ -15,6 +15,9 @@ from db.models import (
     TrainingPlan,
     RacePlan,
     DailyPlan,
+    Shoe,
+    ShoeLog,
+    DailyHealth,
 )
 
 
@@ -354,4 +357,120 @@ class DailyPlanRepository:
             completion_pct=completion_pct,
             coach_feedback=coach_feedback,
             deviation_notes=deviation_notes,
+        )
+
+
+class ShoeRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def create(self, **fields) -> Shoe:
+        shoe = Shoe(**fields, created_at=datetime.utcnow().isoformat())
+        self.db.add(shoe)
+        self.db.commit()
+        self.db.refresh(shoe)
+        return shoe
+
+    def get(self, shoe_id: int) -> Optional[Shoe]:
+        return self.db.query(Shoe).filter(Shoe.id == shoe_id).first()
+
+    def list_by_user(self, user_id: str, status: Optional[str] = None) -> list[Shoe]:
+        q = self.db.query(Shoe).filter(Shoe.user_id == user_id)
+        if status:
+            q = q.filter(Shoe.status == status)
+        return q.order_by(desc(Shoe.created_at)).all()
+
+    def update(self, shoe_id: int, **fields) -> Optional[Shoe]:
+        shoe = self.get(shoe_id)
+        if not shoe:
+            return None
+        for k, v in fields.items():
+            if hasattr(shoe, k):
+                setattr(shoe, k, v)
+        self.db.commit()
+        self.db.refresh(shoe)
+        return shoe
+
+    def retire(self, shoe_id: int) -> Optional[Shoe]:
+        return self.update(shoe_id, status="retired")
+
+    def add_km(self, shoe_id: int, km: float):
+        shoe = self.get(shoe_id)
+        if shoe:
+            shoe.total_km = (shoe.total_km or 0) + km
+            shoe.total_runs = (shoe.total_runs or 0) + 1
+            self.db.commit()
+            self.db.refresh(shoe)
+
+
+class ShoeLogRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def create(self, **fields) -> ShoeLog:
+        log = ShoeLog(**fields, logged_at=datetime.utcnow().isoformat())
+        self.db.add(log)
+        self.db.commit()
+        self.db.refresh(log)
+        return log
+
+    def get_by_shoe(self, shoe_id: int, limit: int = 20) -> list[ShoeLog]:
+        return (
+            self.db.query(ShoeLog)
+            .filter(ShoeLog.shoe_id == shoe_id)
+            .order_by(desc(ShoeLog.logged_at))
+            .limit(limit)
+            .all()
+        )
+
+    def get_by_activity(self, activity_run_id: int) -> Optional[ShoeLog]:
+        return (
+            self.db.query(ShoeLog)
+            .filter(ShoeLog.activity_run_id == activity_run_id)
+            .first()
+        )
+
+
+class DailyHealthRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def upsert(self, user_id: str, date: str, **fields) -> DailyHealth:
+        record = (
+            self.db.query(DailyHealth)
+            .filter(DailyHealth.user_id == user_id, DailyHealth.date == date)
+            .first()
+        )
+        if not record:
+            record = DailyHealth(
+                user_id=user_id, date=date, **fields,
+                created_at=datetime.utcnow().isoformat(),
+            )
+            self.db.add(record)
+        else:
+            for k, v in fields.items():
+                if hasattr(record, k):
+                    setattr(record, k, v)
+        self.db.commit()
+        self.db.refresh(record)
+        return record
+
+    def get_range(self, user_id: str, start: str, end: str) -> list[DailyHealth]:
+        return (
+            self.db.query(DailyHealth)
+            .filter(
+                DailyHealth.user_id == user_id,
+                DailyHealth.date >= start,
+                DailyHealth.date <= end,
+            )
+            .order_by(DailyHealth.date)
+            .all()
+        )
+
+    def latest(self, user_id: str) -> Optional[DailyHealth]:
+        return (
+            self.db.query(DailyHealth)
+            .filter(DailyHealth.user_id == user_id)
+            .order_by(desc(DailyHealth.date))
+            .first()
         )

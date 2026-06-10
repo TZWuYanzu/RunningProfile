@@ -167,7 +167,59 @@ class DailyPlan(Base):
     updated_at = Column(String)
 
 
+class Shoe(Base):
+    __tablename__ = "shoes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, nullable=False)
+    name = Column(String, nullable=False)
+    brand = Column(String)
+    usage = Column(String, default="trail")
+    traits = Column(Text)
+    initial_km = Column(Float, default=0)
+    total_km = Column(Float, default=0)
+    total_runs = Column(Integer, default=0)
+    status = Column(String, default="active")
+    created_at = Column(String)
+
+
+class ShoeLog(Base):
+    __tablename__ = "shoe_logs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    shoe_id = Column(Integer, nullable=False)
+    activity_run_id = Column(Integer)
+    terrain = Column(String)
+    grip = Column(String)
+    cushion = Column(String)
+    stability = Column(String)
+    overall = Column(String)
+    notes = Column(Text)
+    logged_at = Column(String)
+
+
+class DailyHealth(Base):
+    __tablename__ = "daily_health"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, nullable=False)
+    date = Column(String, nullable=False)
+    resting_heart_rate = Column(Integer)
+    hrv_rmssd = Column(Float)
+    hrv_baseline = Column(Float)
+    fatigue_rate = Column(Integer)
+    training_load = Column(Float)
+    sleep_score = Column(Integer)
+    sleep_duration_min = Column(Float)
+    deep_sleep_min = Column(Float)
+    light_sleep_min = Column(Float)
+    rem_sleep_min = Column(Float)
+    source = Column(String, default="coros")
+    raw_json = Column(Text)
+    created_at = Column(String)
+
+
 def init_coach_tables(engine):
     for model in [AthleteProfile, TrainingNote, DialogueMessage, ProfileStaging,
-                  TrainingPlan, RacePlan, DailyPlan]:
+                  TrainingPlan, RacePlan, DailyPlan, Shoe, ShoeLog, DailyHealth]:
         model.__table__.create(engine, checkfirst=True)

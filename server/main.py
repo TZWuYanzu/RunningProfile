@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from config import settings
 from db.engine import engine
 from db.models import init_coach_tables
-from routers import activities, coach, calendar
+from routers import activities, coach, calendar, equipment, health
 from routers import memory as memory_router
 
 app = FastAPI(
@@ -49,6 +49,8 @@ app.include_router(activities.router)
 app.include_router(coach.router)
 app.include_router(calendar.router)
 app.include_router(memory_router.router)
+app.include_router(equipment.router)
+app.include_router(health.router)
 
 
 @app.on_event("startup")
