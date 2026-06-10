@@ -3,7 +3,7 @@ import { getMonth, getPlans, getDayDetail } from '@/api/calendar';
 import type { DayPlan, RacePlan, DayDetail as DayDetailType } from '@/types/coach';
 import PlanHeader from './PlanHeader';
 import MonthGrid from './MonthGrid';
-import DayDetail from './DayDetail';
+import InlineDetail from './InlineDetail';
 
 function getCurrentMonth() {
   const now = new Date();
@@ -14,8 +14,11 @@ export default function Calendar() {
   const [month, setMonth] = useState(getCurrentMonth);
   const [plans, setPlans] = useState<DayPlan[]>([]);
   const [activePlan, setActivePlan] = useState<RacePlan | null>(null);
-  const [selectedDay, setSelectedDay] = useState<DayDetailType | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dayDetail, setDayDetail] = useState<DayDetailType | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
 
   const [year, mo] = month.split('-').map(Number);
 
@@ -27,6 +30,8 @@ export default function Calendar() {
 
   useEffect(() => {
     setLoading(true);
+    setSelectedDate(null);
+    setDayDetail(null);
     getMonth(month)
       .then((res) => setPlans(res.plans))
       .catch(() => setPlans([]))
@@ -44,10 +49,22 @@ export default function Calendar() {
   };
 
   const handleDayClick = async (date: string) => {
+    if (selectedDate === date) {
+      setSelectedDate(null);
+      setDayDetail(null);
+      return;
+    }
+    setSelectedDate(date);
+    setDayDetail(null);
+    setDetailLoading(true);
     try {
       const detail = await getDayDetail(date);
-      if (detail.plan) setSelectedDay(detail);
-    } catch {}
+      setDayDetail(detail);
+    } catch {
+      setDayDetail({ date, plan: null });
+    } finally {
+      setDetailLoading(false);
+    }
   };
 
   return (
@@ -70,11 +87,18 @@ export default function Calendar() {
           <p className="text-xs text-tertiary mt-1">和教练聊聊你的目标赛事，生成专属训练计划</p>
         </div>
       ) : (
-        <MonthGrid year={year} month={mo} plans={plans} onDayClick={handleDayClick} />
-      )}
-
-      {selectedDay && (
-        <DayDetail detail={selectedDay} onClose={() => setSelectedDay(null)} />
+        <>
+          <MonthGrid
+            year={year}
+            month={mo}
+            plans={plans}
+            selectedDate={selectedDate}
+            onDayClick={handleDayClick}
+          />
+          {selectedDate && (
+            <InlineDetail detail={dayDetail} loading={detailLoading} />
+          )}
+        </>
       )}
     </div>
   );
