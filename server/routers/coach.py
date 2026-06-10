@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timedelta
 from typing import Generator
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -203,6 +203,38 @@ def _profile_to_dict(profile) -> dict:
         "injury_history": profile.injury_history,
         "running_experience_years": profile.running_experience_years,
     }
+
+
+@router.post("/transcribe")
+async def transcribe(file: UploadFile = File(...)):
+    """Accept audio file, send to DashScope Paraformer ASR, return text."""
+    from config import settings
+
+    audio_bytes = await file.read()
+
+    if not settings.qwen_api_key:
+        return {"text": "[语音识别需要配置 QWEN_API_KEY]", "language": "zh"}
+
+    import io
+    from openai import OpenAI
+
+    client = OpenAI(
+        api_key=settings.qwen_api_key,
+        base_url=settings.qwen_base_url,
+    )
+
+    audio_file = io.BytesIO(audio_bytes)
+    audio_file.name = file.filename or "recording.webm"
+
+    try:
+        transcript = client.audio.transcriptions.create(
+            model="paraformer-realtime-v2",
+            file=audio_file,
+            language="zh",
+        )
+        return {"text": transcript.text, "language": "zh"}
+    except Exception as e:
+        return {"text": "", "error": str(e)}
 
 
 def _format_onboarding_summary(trail_eval: dict, road_eval: dict) -> str:
