@@ -1,6 +1,6 @@
 import type { SSEEvent } from '@/types/coach';
 
-const API_TOKEN = 'dev-key-change-me';
+export const API_TOKEN = 'dev-key-change-me';
 
 export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
