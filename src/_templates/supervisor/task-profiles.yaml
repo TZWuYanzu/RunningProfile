@@ -1,0 +1,58 @@
+# Task Profiles
+# 任务类型自动匹配规则
+#
+# 使用方式：
+# 1. SDD 生成阶段：AI 从 task 描述中提取关键词，匹配 profile
+# 2. 匹配后：读取对应 playbook 文件作为领域知识注入
+# 3. QA 阶段：在标准检查之外，额外逐项验证 extra_checks
+# 4. 未匹配：仅走标准审查
+
+
+profiles:
+  ui-page:
+    match_keywords: [页面, 列表, 表格, 表单, 详情, 看板, 弹窗, 抽屉]
+    playbooks: []
+    extra_checks:
+      - 页面在目标路由下可正常访问
+      - 加载态和空数据态已处理
+      - 移动端/窄屏适配（如适用）
+
+  data-crud:
+    match_keywords: [新增, 编辑, 删除, 保存, 提交, 创建]
+    playbooks: []
+    extra_checks:
+      - 接口调用参数正确
+      - 成功/失败反馈到位
+      - 操作后数据自动刷新
+
+  component:
+    match_keywords: [组件, 公共, 复用, 封装]
+    playbooks: []
+    extra_checks:
+      - Props 类型完整
+      - 有默认值处理
+      - 影响分析已输出（谁在用这个组件）
+
+  api-endpoint:
+    match_keywords: [接口, API, endpoint, 路由, router]
+    playbooks: []
+    extra_checks:
+      - 请求参数校验完整
+      - 错误码和错误信息规范
+      - 接口文档已更新
+
+  data-model:
+    match_keywords: [模型, model, schema, 数据库, 表, 字段]
+    playbooks: []
+    extra_checks:
+      - 数据库迁移脚本已生成
+      - 索引考虑
+      - 向后兼容性
+
+  bug-fix:
+    match_keywords: [修复, 修复, bug, fix, 报错, 异常, 问题]
+    playbooks: []
+    extra_checks:
+      - 根因已定位并修复（非表面补丁）
+      - 相关场景回归测试
+      - 不引入新问题
