@@ -9,6 +9,7 @@ import StyleMidnight from '@/components/DesignPreview/StyleMidnight';
 import StyleNord from '@/components/DesignPreview/StyleNord';
 import { LinearChat, LinearCalendar, LinearOverview } from '@/components/DesignPreview/LinearFull';
 import { SwissChat, SwissCalendar, SwissOverview } from '@/components/DesignPreview/SwissFull';
+import { ActivityHistory, ActivityDetail, ActivityShareCards } from '@/components/DesignPreview/ActivityDemo';
 
 const MOCK_HEALTH: DailyHealthRecord = {
   date: '2026-06-10',
@@ -128,6 +129,26 @@ export default function DesignPreviewPage() {
         </PhoneFrame>
         <PhoneFrame title="Overview 概览" subtitle="数据 Dashboard">
           <SwissOverview nickname={NICKNAME} record={MOCK_HEALTH} />
+        </PhoneFrame>
+      </div>
+
+      {/* ── Activity Core Experience Demo ── */}
+      <div className="text-center my-12">
+        <div className="inline-block px-6 py-2 bg-gray-800 rounded-full text-sm text-white font-medium">
+          运动核心体验 Demo · 专业克制高级
+        </div>
+        <p className="text-xs text-gray-400 mt-2">Swiss 瑞士排版 · 白底红调 · 极端字号对比 · 专业克制高级</p>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-6 mb-16">
+        <PhoneFrame title="运动历史列表" subtitle="轨迹概览 · 统计 · 教练洞察 · 活动卡片">
+          <ActivityHistory nickname={NICKNAME} record={MOCK_HEALTH} />
+        </PhoneFrame>
+        <PhoneFrame title="运动详情 · 越野跑" subtitle="地形地图 · 数据网格 · 教练点评 · 分段">
+          <ActivityDetail nickname={NICKNAME} record={MOCK_HEALTH} />
+        </PhoneFrame>
+        <PhoneFrame title="分享卡片" subtitle="越野数据卡 · 路跑数据卡 · 训练周报卡">
+          <ActivityShareCards nickname={NICKNAME} record={MOCK_HEALTH} />
         </PhoneFrame>
       </div>
     </div>
