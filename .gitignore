@@ -44,3 +44,9 @@ imported.json
 AGENTS.md
 CLAUDE.md
 .claude/
+
+# Cursor IDE
+.cursor/
+
+# Memory directory (tool generated)
+memory/
