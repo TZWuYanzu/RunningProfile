@@ -38,3 +38,9 @@ run_page/data.db-wal
 __pycache__/
 src/static/activities.json
 imported.json
+
+
+# AI Harness (generated, do not commit)
+AGENTS.md
+CLAUDE.md
+.claude/
