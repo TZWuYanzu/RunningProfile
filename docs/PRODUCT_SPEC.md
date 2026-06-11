@@ -597,7 +597,10 @@ CREATE TABLE dialogue_timeline (
 | 佳明 Connect | 数据记录，分析浅 | ✅ | 极弱 | 无 | 无 |
 | Strava | 附带 | ✅ | 无 | 无 | 无 |
 | TrailForks | 路线库，无训练功能 | 无 | 无 | 无 | 无 |
+| Sigma | 未突出 | 基础记录 | ✅ 北体大知识库 | 弱（主动对话） | 无 |
 | **本产品** | **深度专项** | **✅** | **核心功能** | **核心功能** | **Phase 3** |
+
+> Sigma 详细调研见 [COMPETITOR_SIGMA.md](./COMPETITOR_SIGMA.md)（2026-06-11）
 
 ### 9.2 两个真正的护城河
 
